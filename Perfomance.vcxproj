@@ -132,10 +132,12 @@
     <ClCompile Include="instruction_set.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="metrics.cpp" />
+    <ClCompile Include="proc_info.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="instruction_set.hpp" />
     <ClInclude Include="metrics.hpp" />
+    <ClInclude Include="proc_info.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

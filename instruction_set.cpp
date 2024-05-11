@@ -2,169 +2,149 @@
 
 namespace bench 
 {
-	class InstructionSet::InstructionSetImpl
-	{
-	public:
-		InstructionSetImpl();
-
-		int nIds_;
-		int nExIds_;
-		std::string vendor_;
-		std::string brand_;
-		bool isIntel_;
-		bool isAMD_;
-		std::bitset<32> f_1_ECX_;
-		std::bitset<32> f_1_EDX_;
-		std::bitset<32> f_7_EBX_;
-		std::bitset<32> f_7_ECX_;
-		std::bitset<32> f_81_ECX_;
-		std::bitset<32> f_81_EDX_;
-		std::vector<std::array<int, 4>> data_;
-		std::vector<std::array<int, 4>> extdata_;
-	};
-
 	InstructionSet::InstructionSetImpl::InstructionSetImpl() :
-		nIds_{ 0 },
-		nExIds_{ 0 },
-		isIntel_{ false },
-		isAMD_{ false },
+		mCountIds{ 0 },
+		mCountExIds{ 0 },
+		mIsIntel{ false },
+		mIsAMD{ false },
+		mBrand{},
+		mModel{},
 		f_1_ECX_{ 0 },
 		f_1_EDX_{ 0 },
 		f_7_EBX_{ 0 },
 		f_7_ECX_{ 0 },
 		f_81_ECX_{ 0 },
 		f_81_EDX_{ 0 },
-		data_{},
-		extdata_{}
+		mData{},
+		mExtData{}
 	{
-		std::array<int, 4> cpui;
+		std::array<int, 4> cpui{};
 
 		__cpuid(cpui.data(), 0);
-		nIds_ = cpui[0];
+		mCountIds = cpui[0];
 
-		for (int i = 0; i <= nIds_; ++i)
+		mData.reserve(mCountIds);
+
+		for (int i = 0; i <= mCountIds; ++i)
 		{
 			__cpuidex(cpui.data(), i, 0);
-			data_.push_back(cpui);
+			mData.push_back(cpui);
 		}
 
-		char vendor[0x20];
-		memset(vendor, 0, sizeof(vendor));
-		*reinterpret_cast<int*>(vendor) = data_[0][1];
-		*reinterpret_cast<int*>(vendor + 4) = data_[0][3];
-		*reinterpret_cast<int*>(vendor + 8) = data_[0][2];
-		vendor_ = vendor;
-		if (vendor_ == "GenuineIntel")
+		char brand_[0x20];
+		std::memset(brand_, 0, sizeof(brand_));
+		*reinterpret_cast<int*>(brand_) = mData[0][1];
+		*reinterpret_cast<int*>(brand_ + 4) = mData[0][3];
+		*reinterpret_cast<int*>(brand_ + 8) = mData[0][2];
+		mBrand = brand_;
+
+		if (mBrand == "GenuineIntel")
+			mIsIntel = true;
+		else if (mBrand == "AuthenticAMD")
+			mIsAMD = true;
+
+		if (mCountIds >= 1)
 		{
-			isIntel_ = true;
-		}
-		else if (vendor_ == "AuthenticAMD")
-		{
-			isAMD_ = true;
+			f_1_ECX_ = mData[1][2];
+			f_1_EDX_ = mData[1][3];
 		}
 
-		if (nIds_ >= 1)
+		if (mCountIds >= 7)
 		{
-			f_1_ECX_ = data_[1][2];
-			f_1_EDX_ = data_[1][3];
-		}
-
-		if (nIds_ >= 7)
-		{
-			f_7_EBX_ = data_[7][1];
-			f_7_ECX_ = data_[7][2];
+			f_7_EBX_ = mData[7][1];
+			f_7_ECX_ = mData[7][2];
 		}
 
 		__cpuid(cpui.data(), 0x80000000);
-		nExIds_ = cpui[0];
+		mCountExIds = cpui[0];
 
 		char brand[0x40];
 		memset(brand, 0, sizeof(brand));
 
-		for (int i = 0x80000000; i <= nExIds_; ++i)
+		for (int i = 0x80000000; i <= mCountExIds; ++i)
 		{
 			__cpuidex(cpui.data(), i, 0);
-			extdata_.push_back(cpui);
+			mExtData.push_back(cpui);
 		}
 
-		if (nExIds_ >= 0x80000001)
+		if (mCountExIds >= 0x80000001)
 		{
-			f_81_ECX_ = extdata_[1][2];
-			f_81_EDX_ = extdata_[1][3];
+			f_81_ECX_ = mExtData[1][2];
+			f_81_EDX_ = mExtData[1][3];
 		}
 
-		if (nExIds_ >= 0x80000004)
+		if (mCountExIds >= 0x80000004)
 		{
-			memcpy(brand, extdata_[2].data(), sizeof(cpui));
-			memcpy(brand + 16, extdata_[3].data(), sizeof(cpui));
-			memcpy(brand + 32, extdata_[4].data(), sizeof(cpui));
-			brand_ = brand;
+			memcpy(brand, mExtData[2].data(), sizeof(cpui));
+			memcpy(brand + 16, mExtData[3].data(), sizeof(cpui));
+			memcpy(brand + 32, mExtData[4].data(), sizeof(cpui));
+			mModel = brand;
 		}
 	};
 
-	std::string InstructionSet::Brand(void) { return CPU_Rep.vendor_; }
-	std::string InstructionSet::Model(void) { return CPU_Rep.brand_; }
+	std::string InstructionSet::brand() { return mInstrInfo.mBrand; }
+	std::string InstructionSet::model() { return mInstrInfo.mModel; }
 
-	bool InstructionSet::isIntel() noexcept { return CPU_Rep.isIntel_; }
-	bool InstructionSet::isAMD() noexcept { return CPU_Rep.isAMD_; }
+	bool InstructionSet::isIntel() noexcept { return mInstrInfo.mIsIntel; }
+	bool InstructionSet::isAMD() noexcept { return mInstrInfo.mIsAMD; }
 
-	bool InstructionSet::SSE3(void) { return CPU_Rep.f_1_ECX_[0]; }
-	bool InstructionSet::PCLMULQDQ(void) { return CPU_Rep.f_1_ECX_[1]; }
-	bool InstructionSet::MONITOR(void) { return CPU_Rep.f_1_ECX_[3]; }
-	bool InstructionSet::SSSE3(void) { return CPU_Rep.f_1_ECX_[9]; }
-	bool InstructionSet::FMA(void) { return CPU_Rep.f_1_ECX_[12]; }
-	bool InstructionSet::CMPXCHG16B(void) { return CPU_Rep.f_1_ECX_[13]; }
-	bool InstructionSet::SSE41(void) { return CPU_Rep.f_1_ECX_[19]; }
-	bool InstructionSet::SSE42(void) { return CPU_Rep.f_1_ECX_[20]; }
-	bool InstructionSet::MOVBE(void) { return CPU_Rep.f_1_ECX_[22]; }
-	bool InstructionSet::POPCNT(void) { return CPU_Rep.f_1_ECX_[23]; }
-	bool InstructionSet::AES(void) { return CPU_Rep.f_1_ECX_[25]; }
-	bool InstructionSet::XSAVE(void) { return CPU_Rep.f_1_ECX_[26]; }
-	bool InstructionSet::OSXSAVE(void) { return CPU_Rep.f_1_ECX_[27]; }
-	bool InstructionSet::AVX(void) { return CPU_Rep.f_1_ECX_[28]; }
-	bool InstructionSet::F16C(void) { return CPU_Rep.f_1_ECX_[29]; }
-	bool InstructionSet::RDRAND(void) { return CPU_Rep.f_1_ECX_[30]; }
+	bool InstructionSet::SSE3() noexcept { return mInstrInfo.f_1_ECX_[0]; }
+	bool InstructionSet::PCLMULQDQ() noexcept { return mInstrInfo.f_1_ECX_[1]; }
+	bool InstructionSet::MONITOR() noexcept { return mInstrInfo.f_1_ECX_[3]; }
+	bool InstructionSet::SSSE3() noexcept { return mInstrInfo.f_1_ECX_[9]; }
+	bool InstructionSet::FMA() noexcept { return mInstrInfo.f_1_ECX_[12]; }
+	bool InstructionSet::CMPXCHG16B() noexcept { return mInstrInfo.f_1_ECX_[13]; }
+	bool InstructionSet::SSE41() noexcept { return mInstrInfo.f_1_ECX_[19]; }
+	bool InstructionSet::SSE42() noexcept { return mInstrInfo.f_1_ECX_[20]; }
+	bool InstructionSet::MOVBE() noexcept { return mInstrInfo.f_1_ECX_[22]; }
+	bool InstructionSet::POPCNT() noexcept { return mInstrInfo.f_1_ECX_[23]; }
+	bool InstructionSet::AES() noexcept { return mInstrInfo.f_1_ECX_[25]; }
+	bool InstructionSet::XSAVE() noexcept { return mInstrInfo.f_1_ECX_[26]; }
+	bool InstructionSet::OSXSAVE() noexcept { return mInstrInfo.f_1_ECX_[27]; }
+	bool InstructionSet::AVX() noexcept { return mInstrInfo.f_1_ECX_[28]; }
+	bool InstructionSet::F16C() noexcept { return mInstrInfo.f_1_ECX_[29]; }
+	bool InstructionSet::RDRAND() noexcept { return mInstrInfo.f_1_ECX_[30]; }
 
-	bool InstructionSet::MSR(void) { return CPU_Rep.f_1_EDX_[5]; }
-	bool InstructionSet::CX8(void) { return CPU_Rep.f_1_EDX_[8]; }
-	bool InstructionSet::SEP(void) { return CPU_Rep.f_1_EDX_[11]; }
-	bool InstructionSet::CMOV(void) { return CPU_Rep.f_1_EDX_[15]; }
-	bool InstructionSet::CLFSH(void) { return CPU_Rep.f_1_EDX_[19]; }
-	bool InstructionSet::MMX(void) { return CPU_Rep.f_1_EDX_[23]; }
-	bool InstructionSet::FXSR(void) { return CPU_Rep.f_1_EDX_[24]; }
-	bool InstructionSet::SSE(void) { return CPU_Rep.f_1_EDX_[25]; }
-	bool InstructionSet::SSE2(void) { return CPU_Rep.f_1_EDX_[26]; }
+	bool InstructionSet::MSR() noexcept { return mInstrInfo.f_1_EDX_[5]; }
+	bool InstructionSet::CX8() noexcept { return mInstrInfo.f_1_EDX_[8]; }
+	bool InstructionSet::SEP() noexcept { return mInstrInfo.f_1_EDX_[11]; }
+	bool InstructionSet::CMOV() noexcept { return mInstrInfo.f_1_EDX_[15]; }
+	bool InstructionSet::CLFSH() noexcept { return mInstrInfo.f_1_EDX_[19]; }
+	bool InstructionSet::MMX() noexcept { return mInstrInfo.f_1_EDX_[23]; }
+	bool InstructionSet::FXSR() noexcept { return mInstrInfo.f_1_EDX_[24]; }
+	bool InstructionSet::SSE() noexcept { return mInstrInfo.f_1_EDX_[25]; }
+	bool InstructionSet::SSE2() noexcept { return mInstrInfo.f_1_EDX_[26]; }
 
-	bool InstructionSet::FSGSBASE(void) { return CPU_Rep.f_7_EBX_[0]; }
-	bool InstructionSet::BMI1(void) { return CPU_Rep.f_7_EBX_[3]; }
-	bool InstructionSet::HLE(void) { return CPU_Rep.isIntel_ && CPU_Rep.f_7_EBX_[4]; }
-	bool InstructionSet::AVX2(void) { return CPU_Rep.f_7_EBX_[5]; }
-	bool InstructionSet::BMI2(void) { return CPU_Rep.f_7_EBX_[8]; }
-	bool InstructionSet::ERMS(void) { return CPU_Rep.f_7_EBX_[9]; }
-	bool InstructionSet::INVPCID(void) { return CPU_Rep.f_7_EBX_[10]; }
-	bool InstructionSet::RTM(void) { return CPU_Rep.isIntel_ && CPU_Rep.f_7_EBX_[11]; }
-	bool InstructionSet::AVX512F(void) { return CPU_Rep.f_7_EBX_[16]; }
-	bool InstructionSet::RDSEED(void) { return CPU_Rep.f_7_EBX_[18]; }
-	bool InstructionSet::ADX(void) { return CPU_Rep.f_7_EBX_[19]; }
-	bool InstructionSet::AVX512PF(void) { return CPU_Rep.f_7_EBX_[26]; }
-	bool InstructionSet::AVX512ER(void) { return CPU_Rep.f_7_EBX_[27]; }
-	bool InstructionSet::AVX512CD(void) { return CPU_Rep.f_7_EBX_[28]; }
-	bool InstructionSet::SHA(void) { return CPU_Rep.f_7_EBX_[29]; }
+	bool InstructionSet::FSGSBASE() noexcept { return mInstrInfo.f_7_EBX_[0]; }
+	bool InstructionSet::BMI1() noexcept { return mInstrInfo.f_7_EBX_[3]; }
+	bool InstructionSet::HLE() noexcept { return mInstrInfo.mIsIntel && mInstrInfo.f_7_EBX_[4]; }
+	bool InstructionSet::AVX2() noexcept { return mInstrInfo.f_7_EBX_[5]; }
+	bool InstructionSet::BMI2() noexcept { return mInstrInfo.f_7_EBX_[8]; }
+	bool InstructionSet::ERMS() noexcept { return mInstrInfo.f_7_EBX_[9]; }
+	bool InstructionSet::INVPCID() noexcept { return mInstrInfo.f_7_EBX_[10]; }
+	bool InstructionSet::RTM() noexcept { return mInstrInfo.mIsIntel && mInstrInfo.f_7_EBX_[11]; }
+	bool InstructionSet::AVX512F() noexcept { return mInstrInfo.f_7_EBX_[16]; }
+	bool InstructionSet::RDSEED() noexcept { return mInstrInfo.f_7_EBX_[18]; }
+	bool InstructionSet::ADX() noexcept { return mInstrInfo.f_7_EBX_[19]; }
+	bool InstructionSet::AVX512PF() noexcept { return mInstrInfo.f_7_EBX_[26]; }
+	bool InstructionSet::AVX512ER() noexcept { return mInstrInfo.f_7_EBX_[27]; }
+	bool InstructionSet::AVX512CD() noexcept { return mInstrInfo.f_7_EBX_[28]; }
+	bool InstructionSet::SHA() noexcept { return mInstrInfo.f_7_EBX_[29]; }
 
-	bool InstructionSet::PREFETCHWT1(void) { return CPU_Rep.f_7_ECX_[0]; }
+	bool InstructionSet::PREFETCHWT1() noexcept { return mInstrInfo.f_7_ECX_[0]; }
 
-	bool InstructionSet::LAHF(void) { return CPU_Rep.f_81_ECX_[0]; }
-	bool InstructionSet::LZCNT(void) { return CPU_Rep.isIntel_ && CPU_Rep.f_81_ECX_[5]; }
-	bool InstructionSet::ABM(void) { return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[5]; }
-	bool InstructionSet::SSE4a(void) { return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[6]; }
-	bool InstructionSet::XOP(void) { return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[11]; }
-	bool InstructionSet::TBM(void) { return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[21]; }
+	bool InstructionSet::LAHF() noexcept { return mInstrInfo.f_81_ECX_[0]; }
+	bool InstructionSet::LZCNT() noexcept { return mInstrInfo.mIsIntel && mInstrInfo.f_81_ECX_[5]; }
+	bool InstructionSet::ABM() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_ECX_[5]; }
+	bool InstructionSet::SSE4a() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_ECX_[6]; }
+	bool InstructionSet::XOP() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_ECX_[11]; }
+	bool InstructionSet::TBM() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_ECX_[21]; }
 
-	bool InstructionSet::SYSCALL(void) { return CPU_Rep.isIntel_ && CPU_Rep.f_81_EDX_[11]; }
-	bool InstructionSet::MMXEXT(void) { return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[22]; }
-	bool InstructionSet::RDTSCP(void) { return CPU_Rep.isIntel_ && CPU_Rep.f_81_EDX_[27]; }
-	bool InstructionSet::_3DNOWEXT(void) { return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[30]; }
-	bool InstructionSet::_3DNOW(void) { return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[31]; }
+	bool InstructionSet::SYSCALL() noexcept { return mInstrInfo.mIsIntel && mInstrInfo.f_81_EDX_[11]; }
+	bool InstructionSet::MMXEXT() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[22]; }
+	bool InstructionSet::RDTSCP() noexcept { return mInstrInfo.mIsIntel && mInstrInfo.f_81_EDX_[27]; }
+	bool InstructionSet::_3DNOWEXT() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[30]; }
+	bool InstructionSet::_3DNOW() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[31]; }
 
-	const InstructionSet::InstructionSetImpl InstructionSet::CPU_Rep;
-}
+	const InstructionSet::InstructionSetImpl InstructionSet::mInstrInfo;
+} // namespace bench
