@@ -9,21 +9,21 @@ int main()
 {
 	while (true)
 	{
-		std::cout << bench::ProcInfo::brand() << '\n';
-		std::cout << bench::ProcInfo::model() << '\n';
+		std::cout << proc::ProcInfo::brand() << '\n';
+		std::cout << proc::ProcInfo::model() << '\n';
 
-		std::cout << "isAMD: " << bench::ProcInfo::isAMD() << ' ';
-		std::cout << "isIntel: " << bench::ProcInfo::isIntel() << '\n';
+		std::cout << "isAMD: " << proc::ProcInfo::isAMD() << ' ';
+		std::cout << "isIntel: " << proc::ProcInfo::isIntel() << '\n';
 
-		std::cout << "core: " << bench::ProcInfo::countCores() << ' ';
-		std::cout << "thread: " << bench::ProcInfo::countThreads() << '\n';
+		std::cout << "core: " << proc::ProcInfo::countCores() << ' ';
+		std::cout << "thread: " << proc::ProcInfo::countThreads() << '\n';
 
-		std::cout << "L1: " << bench::ProcInfo::sizeCacheL1() << '\n';
-		std::cout << "L2: " << bench::ProcInfo::sizeCacheL2() << '\n';
-		std::cout << "L3: " << bench::ProcInfo::sizeCacheL3() << '\n';
+		std::cout << "L1: " << proc::ProcInfo::sizeCacheL1() << '\n';
+		std::cout << "L2: " << proc::ProcInfo::sizeCacheL2() << '\n';
+		std::cout << "L3: " << proc::ProcInfo::sizeCacheL3() << '\n';
 
-		std::cout << "cpu: " << bench::getLoadCPU() << '\n';
-		std::cout << "mem: " << bench::getLoadMem() << '\n';
+		std::cout << "cpu: " << metric::getLoadCPU() << '\n';
+		std::cout << "mem: " << metric::getLoadMem() << '\n';
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		system("cls");

@@ -2,7 +2,7 @@
 #include "proc_info.hpp"
 #include "instruction_set.hpp"
 
-namespace bench 
+namespace proc 
 {
 	InstructionSet::InstructionSetImpl::InstructionSetImpl() :
 		mIsIntel{ ProcInfo::isIntel() },
@@ -113,4 +113,4 @@ namespace bench
 	bool InstructionSet::_3DNOWEXT() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[30]; }
 	bool InstructionSet::_3DNOW() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[31]; }
 
-} // namespace bench
+} // namespace proc

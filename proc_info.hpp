@@ -6,14 +6,14 @@
 #include <Windows.h>
 #include <string>
 
-namespace bench
+namespace proc
 {
 	class ProcInfo
 	{
 		class ProcInfoImpl
 		{
 		private:
-			DWORD ñountSetBits(ULONG_PTR bitMask);
+			DWORD countSetBits(ULONG_PTR bitMask);
 
 			void getProdSpecification();
 			void getTechSpecification();
@@ -51,7 +51,7 @@ namespace bench
 		static DWORD sizeCacheL3() noexcept;
 	};
 	
-} // namespace bench
+} // namespace proc
 
 #endif // _WIN32
 #endif // _PROC_INFO_HPP_

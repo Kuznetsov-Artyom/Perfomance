@@ -5,9 +5,9 @@
 #include <cstdlib>
 #include "proc_info.hpp"
 
-namespace bench
+namespace proc
 {
-	DWORD ProcInfo::ProcInfoImpl::ñountSetBits(ULONG_PTR bitMask)
+	DWORD ProcInfo::ProcInfoImpl::countSetBits(ULONG_PTR bitMask)
 	{
 		DWORD LSHIFT = sizeof(ULONG_PTR) * 8 - 1;
 		DWORD bitSetCount = 0;
@@ -93,7 +93,7 @@ namespace bench
 					{
 					case RelationProcessorCore:
 						++mCores;
-						mThreads += ñountSetBits(ptr->ProcessorMask);
+						mThreads += countSetBits(ptr->ProcessorMask);
 						break;
 
 					case RelationCache:
@@ -145,4 +145,4 @@ namespace bench
 	DWORD ProcInfo::sizeCacheL2() noexcept { return mInfo.mSizeCacheL2; }
 	DWORD ProcInfo::sizeCacheL3() noexcept { return mInfo.mSizeCacheL3; }
 
-} // namespace bench
+} // namespace proc

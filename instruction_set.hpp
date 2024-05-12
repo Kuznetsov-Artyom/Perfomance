@@ -7,7 +7,7 @@
 #include <bitset>
 #include <vector>
 
-namespace bench
+namespace proc
 {
 	class InstructionSet
 	{
@@ -92,7 +92,7 @@ namespace bench
 		static bool _3DNOWEXT() noexcept;
 		static bool _3DNOW() noexcept;
 	};	
-} // namespace bench
+} // namespace proc
 
 #endif // _WIN32
 #endif // _INSTRUCTION_SET_HPP_
