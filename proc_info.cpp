@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2024 Kuznetsov Artyom
+//
 #include <intrin.h>
 #include <vector>
 #include <array>

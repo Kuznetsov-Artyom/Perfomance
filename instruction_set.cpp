@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2024 Kuznetsov Artyom
+//
 #include <intrin.h>
 #include "proc_info.hpp"
 #include "instruction_set.hpp"

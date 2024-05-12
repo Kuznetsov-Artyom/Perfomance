@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2024 Kuznetsov Artyom
+//
 #ifndef _INSTRUCTION_SET_HPP_
 #define _INSTRUCTION_SET_HPP_
 

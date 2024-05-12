@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2024 Kuznetsov Artyom
+//
 #ifndef _METRICS_HPP_
 #define _METRICS_HPP_
 
