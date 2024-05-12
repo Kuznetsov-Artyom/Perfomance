@@ -75,5 +75,4 @@ namespace bench
 	DWORD ProcInfo::sizeCacheL2() noexcept { return mInfo.mSizeCacheL2; }
 	DWORD ProcInfo::sizeCacheL3() noexcept { return mInfo.mSizeCacheL3; }
 
-	const ProcInfo::ProcInfoImpl ProcInfo::mInfo;
 } // namespace bench

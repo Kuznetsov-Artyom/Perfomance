@@ -10,7 +10,23 @@ namespace bench
 {
 	class ProcInfo
 	{
-		class ProcInfoImpl;
+		class ProcInfoImpl
+		{
+		public:
+			ProcInfoImpl();
+
+			DWORD mCores;
+			DWORD mThreads;
+			DWORD mSizeCacheL1;
+			DWORD mSizeCacheL2;
+			DWORD mSizeCacheL3;
+
+		private:
+			DWORD CountSetBits(ULONG_PTR bitMask);
+		};
+
+	private:
+		inline static const ProcInfoImpl mInfo;
 
 	public:
 		static DWORD countCores() noexcept;
@@ -18,25 +34,8 @@ namespace bench
 		static DWORD sizeCacheL1() noexcept;
 		static DWORD sizeCacheL2() noexcept;
 		static DWORD sizeCacheL3() noexcept;
-
-	private:
-		static const ProcInfoImpl mInfo;
 	};
-
-	class ProcInfo::ProcInfoImpl
-	{
-	public:
-		ProcInfoImpl();
-
-		DWORD mCores;
-		DWORD mThreads;
-		DWORD mSizeCacheL1;
-		DWORD mSizeCacheL2;
-		DWORD mSizeCacheL3;
-
-	private:
-		DWORD CountSetBits(ULONG_PTR bitMask);
-	};
+	
 } // namespace bench
 
 #endif // _WIN32

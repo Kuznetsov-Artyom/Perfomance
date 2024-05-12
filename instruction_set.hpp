@@ -13,7 +13,29 @@ namespace bench
 {
 	class InstructionSet
 	{
-		class InstructionSetImpl;
+		class InstructionSetImpl
+		{
+		public:
+			InstructionSetImpl();
+
+			int mCountIds;
+			int mCountExIds;
+			bool mIsIntel;
+			bool mIsAMD;
+			std::string mBrand;
+			std::string mModel;
+			std::bitset<32> f_1_ECX_;
+			std::bitset<32> f_1_EDX_;
+			std::bitset<32> f_7_EBX_;
+			std::bitset<32> f_7_ECX_;
+			std::bitset<32> f_81_ECX_;
+			std::bitset<32> f_81_EDX_;
+			std::vector<std::array<int, 4>> mData;
+			std::vector<std::array<int, 4>> mExtData;
+		};
+
+	private:
+		inline static const InstructionSetImpl mInstrInfo;
 
 	public:
 		static std::string brand();
@@ -79,31 +101,7 @@ namespace bench
 		static bool RDTSCP() noexcept;
 		static bool _3DNOWEXT() noexcept;
 		static bool _3DNOW() noexcept;
-
-	private:
-		static const InstructionSetImpl mInstrInfo;
-	};
-
-	class InstructionSet::InstructionSetImpl
-	{
-	public:
-		InstructionSetImpl();
-
-		int mCountIds;
-		int mCountExIds;
-		bool mIsIntel;
-		bool mIsAMD;
-		std::string mBrand;
-		std::string mModel;
-		std::bitset<32> f_1_ECX_;
-		std::bitset<32> f_1_EDX_;
-		std::bitset<32> f_7_EBX_;
-		std::bitset<32> f_7_ECX_;
-		std::bitset<32> f_81_ECX_;
-		std::bitset<32> f_81_EDX_;
-		std::vector<std::array<int, 4>> mData;
-		std::vector<std::array<int, 4>> mExtData;
-	};
+	};	
 } // namespace bench
 
 #endif // _WIN32
