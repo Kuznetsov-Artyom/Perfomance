@@ -146,5 +146,4 @@ namespace bench
 	bool InstructionSet::_3DNOWEXT() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[30]; }
 	bool InstructionSet::_3DNOW() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[31]; }
 
-	const InstructionSet::InstructionSetImpl InstructionSet::mInstrInfo;
 } // namespace bench
