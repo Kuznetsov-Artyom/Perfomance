@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include "metrics.hpp"
 
 namespace bench

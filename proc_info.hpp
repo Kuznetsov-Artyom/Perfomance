@@ -4,7 +4,7 @@
 #ifdef _WIN32
 
 #include <Windows.h>
-#include <cstdlib>
+#include <string>
 
 namespace bench
 {
@@ -12,23 +12,38 @@ namespace bench
 	{
 		class ProcInfoImpl
 		{
+		private:
+			DWORD ñountSetBits(ULONG_PTR bitMask);
+
+			void getProdSpecification();
+			void getTechSpecification();
+
 		public:
 			ProcInfoImpl();
+
+			bool mIsIntel;
+			bool mIsAMD;
+
+			std::string mBrand;
+			std::string mModel;
 
 			DWORD mCores;
 			DWORD mThreads;
 			DWORD mSizeCacheL1;
 			DWORD mSizeCacheL2;
 			DWORD mSizeCacheL3;
-
-		private:
-			DWORD CountSetBits(ULONG_PTR bitMask);
 		};
 
 	private:
 		inline static const ProcInfoImpl mInfo;
 
 	public:
+		static bool isIntel() noexcept;
+		static bool isAMD() noexcept;
+
+		static std::string brand() noexcept;
+		static std::string model() noexcept;
+
 		static DWORD countCores() noexcept;
 		static DWORD countThreads() noexcept;
 		static DWORD sizeCacheL1() noexcept;

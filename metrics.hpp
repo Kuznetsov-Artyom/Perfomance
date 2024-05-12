@@ -3,8 +3,6 @@
 
 #ifdef _WIN32
 
-#include <Windows.h>
-
 namespace bench
 {
 	double getLoadCPU();
