@@ -3,13 +3,11 @@
 
 #ifdef _WIN32
 
-#include <string>
 #include <array>
-#include <vector>
 #include <bitset>
-#include <intrin.h>
+#include <vector>
 
-namespace bench
+namespace proc
 {
 	class InstructionSet
 	{
@@ -18,18 +16,16 @@ namespace bench
 		public:
 			InstructionSetImpl();
 
-			int mCountIds;
-			int mCountExIds;
 			bool mIsIntel;
 			bool mIsAMD;
-			std::string mBrand;
-			std::string mModel;
+
 			std::bitset<32> f_1_ECX_;
 			std::bitset<32> f_1_EDX_;
 			std::bitset<32> f_7_EBX_;
 			std::bitset<32> f_7_ECX_;
 			std::bitset<32> f_81_ECX_;
 			std::bitset<32> f_81_EDX_;
+
 			std::vector<std::array<int, 4>> mData;
 			std::vector<std::array<int, 4>> mExtData;
 		};
@@ -38,12 +34,6 @@ namespace bench
 		inline static const InstructionSetImpl mInstrInfo;
 
 	public:
-		static std::string brand();
-		static std::string model();
-
-		static bool isIntel() noexcept;
-		static bool isAMD() noexcept;
-
 		static bool SSE3() noexcept;
 		static bool PCLMULQDQ() noexcept;
 		static bool MONITOR() noexcept;
@@ -102,7 +92,7 @@ namespace bench
 		static bool _3DNOWEXT() noexcept;
 		static bool _3DNOW() noexcept;
 	};	
-} // namespace bench
+} // namespace proc
 
 #endif // _WIN32
 #endif // _INSTRUCTION_SET_HPP_

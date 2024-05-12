@@ -1,6 +1,7 @@
+#include <Windows.h>
 #include "metrics.hpp"
 
-namespace bench
+namespace metric
 {
 	double getLoadCPU()
 	{
@@ -33,4 +34,4 @@ namespace bench
 		GlobalMemoryStatusEx(&stat);
 		return (static_cast<double>(stat.ullTotalPhys - stat.ullAvailPhys) / stat.ullTotalPhys) * 100;
 	}
-} // namespace bench
+} // namespace metric

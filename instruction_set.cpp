@@ -1,92 +1,59 @@
+#include <intrin.h>
+#include "proc_info.hpp"
 #include "instruction_set.hpp"
 
-namespace bench 
+namespace proc 
 {
 	InstructionSet::InstructionSetImpl::InstructionSetImpl() :
-		mCountIds{ 0 },
-		mCountExIds{ 0 },
-		mIsIntel{ false },
-		mIsAMD{ false },
-		mBrand{},
-		mModel{},
-		f_1_ECX_{ 0 },
-		f_1_EDX_{ 0 },
-		f_7_EBX_{ 0 },
-		f_7_ECX_{ 0 },
-		f_81_ECX_{ 0 },
-		f_81_EDX_{ 0 },
+		mIsIntel{ ProcInfo::isIntel() },
+		mIsAMD{ ProcInfo::isAMD() },
+		f_1_ECX_{},
+		f_1_EDX_{},
+		f_7_EBX_{},
+		f_7_ECX_{},
+		f_81_ECX_{},
+		f_81_EDX_{},
 		mData{},
 		mExtData{}
 	{
 		std::array<int, 4> cpui{};
 
 		__cpuid(cpui.data(), 0);
-		mCountIds = cpui[0];
+		int countIds = cpui[0];
 
-		mData.reserve(mCountIds);
-
-		for (int i = 0; i <= mCountIds; ++i)
+		for (int i = 0; i <= countIds; ++i)
 		{
 			__cpuidex(cpui.data(), i, 0);
 			mData.push_back(cpui);
 		}
 
-		char brand_[0x20];
-		std::memset(brand_, 0, sizeof(brand_));
-		*reinterpret_cast<int*>(brand_) = mData[0][1];
-		*reinterpret_cast<int*>(brand_ + 4) = mData[0][3];
-		*reinterpret_cast<int*>(brand_ + 8) = mData[0][2];
-		mBrand = brand_;
-
-		if (mBrand == "GenuineIntel")
-			mIsIntel = true;
-		else if (mBrand == "AuthenticAMD")
-			mIsAMD = true;
-
-		if (mCountIds >= 1)
+		if (countIds >= 1)
 		{
 			f_1_ECX_ = mData[1][2];
 			f_1_EDX_ = mData[1][3];
 		}
 
-		if (mCountIds >= 7)
+		if (countIds >= 7)
 		{
 			f_7_EBX_ = mData[7][1];
 			f_7_ECX_ = mData[7][2];
 		}
 
 		__cpuid(cpui.data(), 0x80000000);
-		mCountExIds = cpui[0];
+		countIds = cpui[0];
 
-		char brand[0x40];
-		memset(brand, 0, sizeof(brand));
-
-		for (int i = 0x80000000; i <= mCountExIds; ++i)
+		for (int i = 0x80000000; i <= countIds; ++i)
 		{
 			__cpuidex(cpui.data(), i, 0);
 			mExtData.push_back(cpui);
 		}
 
-		if (mCountExIds >= 0x80000001)
+		if (countIds >= 0x80000001)
 		{
 			f_81_ECX_ = mExtData[1][2];
 			f_81_EDX_ = mExtData[1][3];
 		}
-
-		if (mCountExIds >= 0x80000004)
-		{
-			memcpy(brand, mExtData[2].data(), sizeof(cpui));
-			memcpy(brand + 16, mExtData[3].data(), sizeof(cpui));
-			memcpy(brand + 32, mExtData[4].data(), sizeof(cpui));
-			mModel = brand;
-		}
 	};
-
-	std::string InstructionSet::brand() { return mInstrInfo.mBrand; }
-	std::string InstructionSet::model() { return mInstrInfo.mModel; }
-
-	bool InstructionSet::isIntel() noexcept { return mInstrInfo.mIsIntel; }
-	bool InstructionSet::isAMD() noexcept { return mInstrInfo.mIsAMD; }
 
 	bool InstructionSet::SSE3() noexcept { return mInstrInfo.f_1_ECX_[0]; }
 	bool InstructionSet::PCLMULQDQ() noexcept { return mInstrInfo.f_1_ECX_[1]; }
@@ -146,4 +113,4 @@ namespace bench
 	bool InstructionSet::_3DNOWEXT() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[30]; }
 	bool InstructionSet::_3DNOW() noexcept { return mInstrInfo.mIsAMD && mInstrInfo.f_81_EDX_[31]; }
 
-} // namespace bench
+} // namespace proc
