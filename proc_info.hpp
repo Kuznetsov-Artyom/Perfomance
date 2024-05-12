@@ -1,6 +1,9 @@
 #ifndef _PROC_INFO_HPP_
 #define _PROC_INFO_HPP_
 
+//
+// Copyright (c) 2024 Kuznetsov Artyom
+//
 #ifdef _WIN32
 
 #include <Windows.h>

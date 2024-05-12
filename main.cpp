@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2024 Kuznetsov Artyom
+//
 #include <iostream>
 #include <thread>
 #include "instruction_set.hpp"
