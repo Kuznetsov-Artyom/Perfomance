@@ -101,13 +101,21 @@ namespace proc
 
 					case RelationCache:
 						if (ptr->Cache.Level == 1)
-							mSizeCacheL1 = ptr->Cache.Size / 1024;
+						{
+							mCacheL1.mSizeCache = ptr->Cache.Size / 1024;
+							mCacheL1.mSizeLine = ptr->Cache.LineSize;
+						}
 						else if (ptr->Cache.Level == 2)
-							mSizeCacheL2 = ptr->Cache.Size / 1024;
+						{
+							mCacheL2.mSizeCache = ptr->Cache.Size / 1024;
+							mCacheL2.mSizeLine = ptr->Cache.LineSize;
+						}
 						else
-							mSizeCacheL3 = ptr->Cache.Size / 1024;
+						{
+							mCacheL3.mSizeCache = ptr->Cache.Size / 1024;
+							mCacheL3.mSizeLine = ptr->Cache.LineSize;
+						}
 						break;
-
 					default:
 						break;
 					}
@@ -128,9 +136,9 @@ namespace proc
 		mModel{},
 		mCores{},
 		mThreads{},
-		mSizeCacheL1{},
-		mSizeCacheL2{},
-		mSizeCacheL3{}
+		mCacheL1{},
+		mCacheL2{},
+		mCacheL3{}
 	{
 		getProdSpecification();
 		getTechSpecification();
@@ -144,8 +152,11 @@ namespace proc
 
 	DWORD ProcInfo::countCores() noexcept { return mInfo.mCores; }
 	DWORD ProcInfo::countThreads() noexcept { return mInfo.mThreads; }
-	DWORD ProcInfo::sizeCacheL1() noexcept { return mInfo.mSizeCacheL1; }
-	DWORD ProcInfo::sizeCacheL2() noexcept { return mInfo.mSizeCacheL2; }
-	DWORD ProcInfo::sizeCacheL3() noexcept { return mInfo.mSizeCacheL3; }
+	DWORD ProcInfo::sizeCacheL1() noexcept { return mInfo.mCacheL1.mSizeCache; }
+	DWORD ProcInfo::sizeCacheL2() noexcept { return mInfo.mCacheL2.mSizeCache; }
+	DWORD ProcInfo::sizeCacheL3() noexcept { return mInfo.mCacheL3.mSizeCache; }
+	DWORD ProcInfo::sizeLineCacheL1() noexcept { return mInfo.mCacheL1.mSizeLine; }
+	DWORD ProcInfo::sizeLineCacheL2() noexcept { return mInfo.mCacheL2.mSizeLine; }
+	DWORD ProcInfo::sizeLineCacheL3() noexcept { return mInfo.mCacheL3.mSizeLine; }
 
 } // namespace proc

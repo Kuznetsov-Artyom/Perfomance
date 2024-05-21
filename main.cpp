@@ -84,9 +84,13 @@ static void run()
 		std::cout << "core: " << proc::ProcInfo::countCores() << ' ';
 		std::cout << "thread: " << proc::ProcInfo::countThreads() << '\n';
 
-		std::cout << "L1: " << proc::ProcInfo::sizeCacheL1() << " Kb\n";
-		std::cout << "L2: " << proc::ProcInfo::sizeCacheL2() << " Kb\n";
-		std::cout << "L3: " << proc::ProcInfo::sizeCacheL3() << " Kb\n";
+		std::cout << "L1: " << proc::ProcInfo::sizeCacheL1() << " KB\n";
+		std::cout << "line: " << proc::ProcInfo::sizeLineCacheL1() << " B\n";
+		std::cout << "L2: " << proc::ProcInfo::sizeCacheL2() << " KB\n";
+		std::cout << "line: " << proc::ProcInfo::sizeLineCacheL2() << " B\n";
+		std::cout << "L3: " << proc::ProcInfo::sizeCacheL3() << " KB\n";
+		std::cout << "line: " << proc::ProcInfo::sizeLineCacheL3() << " B\n";
+
 
 		std::cout << "cpu: " << metric::getLoadCPU() << " %\n";
 		std::cout << "mem: " << metric::getLoadMem() << " %\n";

@@ -15,6 +15,11 @@ namespace proc
 	{
 		class ProcInfoImpl
 		{
+			struct CacheInfo
+			{
+				DWORD mSizeCache;
+				DWORD mSizeLine;
+			};
 		private:
 			DWORD countSetBits(ULONG_PTR bitMask);
 
@@ -32,9 +37,9 @@ namespace proc
 
 			DWORD mCores;
 			DWORD mThreads;
-			DWORD mSizeCacheL1;
-			DWORD mSizeCacheL2;
-			DWORD mSizeCacheL3;
+			CacheInfo mCacheL1;
+			CacheInfo mCacheL2;
+			CacheInfo mCacheL3;
 		};
 
 	private:
@@ -52,6 +57,9 @@ namespace proc
 		static DWORD sizeCacheL1() noexcept;
 		static DWORD sizeCacheL2() noexcept;
 		static DWORD sizeCacheL3() noexcept;
+		static DWORD sizeLineCacheL1() noexcept;
+		static DWORD sizeLineCacheL2() noexcept;
+		static DWORD sizeLineCacheL3() noexcept;
 	};
 	
 } // namespace proc
