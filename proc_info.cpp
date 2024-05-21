@@ -101,11 +101,11 @@ namespace proc
 
 					case RelationCache:
 						if (ptr->Cache.Level == 1)
-							mSizeCacheL1 = ptr->Cache.Size;
+							mSizeCacheL1 = ptr->Cache.Size / 1024;
 						else if (ptr->Cache.Level == 2)
-							mSizeCacheL2 = ptr->Cache.Size;
+							mSizeCacheL2 = ptr->Cache.Size / 1024;
 						else
-							mSizeCacheL3 = ptr->Cache.Size;
+							mSizeCacheL3 = ptr->Cache.Size / 1024;
 						break;
 
 					default:
