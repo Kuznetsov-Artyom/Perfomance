@@ -84,12 +84,16 @@ static void run()
 		std::cout << "core: " << proc::ProcInfo::countCores() << ' ';
 		std::cout << "thread: " << proc::ProcInfo::countThreads() << '\n';
 
-		std::cout << "L1: " << proc::ProcInfo::sizeCacheL1() << '\n';
-		std::cout << "L2: " << proc::ProcInfo::sizeCacheL2() << '\n';
-		std::cout << "L3: " << proc::ProcInfo::sizeCacheL3() << '\n';
+		std::cout << "L1: " << proc::ProcInfo::sizeCacheL1() << " KB\n";
+		std::cout << "line: " << proc::ProcInfo::sizeLineCacheL1() << " B\n";
+		std::cout << "L2: " << proc::ProcInfo::sizeCacheL2() << " KB\n";
+		std::cout << "line: " << proc::ProcInfo::sizeLineCacheL2() << " B\n";
+		std::cout << "L3: " << proc::ProcInfo::sizeCacheL3() << " KB\n";
+		std::cout << "line: " << proc::ProcInfo::sizeLineCacheL3() << " B\n";
 
-		std::cout << "cpu: " << metric::getLoadCPU() << '\n';
-		std::cout << "mem: " << metric::getLoadMem() << '\n';
+
+		std::cout << "cpu: " << metric::getLoadCPU() << " %\n";
+		std::cout << "mem: " << metric::getLoadMem() << " %\n";
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(250));
 		system("cls");
@@ -99,7 +103,7 @@ static void run()
 
 int main()
 {
-	printInstructionSet();
+	//printInstructionSet();
 	run();
 
 	return 0;
