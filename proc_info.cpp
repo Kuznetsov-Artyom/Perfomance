@@ -152,8 +152,10 @@ namespace proc
 
 	DWORD ProcInfo::countCores() noexcept { return mInfo.mCores; }
 	DWORD ProcInfo::countThreads() noexcept { return mInfo.mThreads; }
+
 	DWORD ProcInfo::sizeCacheL1() noexcept { return mInfo.mCacheL1.mSizeCache; }
 	DWORD ProcInfo::sizeCacheL2() noexcept { return mInfo.mCacheL2.mSizeCache; }
+
 	DWORD ProcInfo::sizeCacheL3() noexcept { return mInfo.mCacheL3.mSizeCache; }
 	DWORD ProcInfo::sizeLineCacheL1() noexcept { return mInfo.mCacheL1.mSizeLine; }
 	DWORD ProcInfo::sizeLineCacheL2() noexcept { return mInfo.mCacheL2.mSizeLine; }

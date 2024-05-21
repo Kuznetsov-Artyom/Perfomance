@@ -20,6 +20,7 @@ namespace proc
 				DWORD mSizeCache;
 				DWORD mSizeLine;
 			};
+
 		private:
 			DWORD countSetBits(ULONG_PTR bitMask);
 
@@ -54,9 +55,11 @@ namespace proc
 
 		static DWORD countCores() noexcept;
 		static DWORD countThreads() noexcept;
+
 		static DWORD sizeCacheL1() noexcept;
 		static DWORD sizeCacheL2() noexcept;
 		static DWORD sizeCacheL3() noexcept;
+
 		static DWORD sizeLineCacheL1() noexcept;
 		static DWORD sizeLineCacheL2() noexcept;
 		static DWORD sizeLineCacheL3() noexcept;
